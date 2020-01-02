@@ -1,0 +1,199 @@
+<!DOCTYPE html:5>
+<html lang= "en">
+<head>
+  <title>Quick To-Do</title>
+  <meta charset= "UTF-8"/>
+  <meta name= "viewport" content= "width=device-width, initial-scale=1.0"/>
+  <meta http-equiv= "X-UA-Compatible" content= "ie=edge"/>
+  <meta name= "description" content= "to-do web app"/>
+  <link rel= "icon" type= "image/x-icon" href= "todo.jpg"/>
+  <link rel= "stylesheet" href= "bootstrap.min.css"/>
+  <link rel= "stylesheet" href= "font-awesome-4.7.0/css/font-awesome.min.css"/>
+  <script src= "jquery-3.3.1.min.js"></script>
+  <script>
+    $(function(){
+      const name= $('#nameForm');
+      const ok= $('#nameOk');
+      $('#todo').hide();
+
+      // intro
+      ok.on('click', function(){
+        if( name.val() === "" ){ alert(`Please type in your name.`); }
+        if( name.val() !== "" ){
+          alert(`Hi ${name.val()}!`);
+          const enteredName= $('<div></div>').text(`${name.val()}'s To-Do List`);
+          window.sessionStorage.setItem('person', `${name.val()}`);
+          console.log( window.sessionStorage.getItem('person') );
+          $('#personToDo').prepend(enteredName);
+          name.val('');
+          $('#pageTitle, .lead, #signIn').hide(1500);
+          $('#todo').slideDown(500);
+        }
+      });
+
+      //todo
+      $('#add').on('click', function(){
+        const input= $('#inpTask').val();
+        if( input !== "" ){
+          const taskItem= $('<li class= "card-header bg-info text-light"></li>').text(input);
+          taskItem.append('<a href= "#" class= "close fa fa-check text-light"></a>');
+          taskItem.css('borderRadius', '7px');
+          $('#taskList').append(taskItem);
+          window.sessionStorage.setItem('taskItem', `${taskItem.text()}`);
+          console.log( window.sessionStorage.getItem('taskItem') );
+          $('input').val(''); //clears input field after user clicks 'add'.
+          $('.close').on('click', function(){
+            $(this).parent().fadeOut(1000);
+          });
+        }
+      });
+      
+      const clearAll= $('<button class= "btn btn-info float-right"></button>').text('Clear All');
+      $('ol').after(clearAll);
+      clearAll.on('click', function(){
+        $('li').fadeOut(1500);
+        window.sessionStorage.clear();
+        console.log( window.sessionStorage.getItem('person') );  //null
+      });
+
+      //settings
+      $('.menu').hide();
+      $('.fa-cog').on('click', function(){
+        $('.fa-cog').toggleClass('animation');
+        $('.menu').slideToggle(1000);
+      });
+
+      // colors
+      $('#colors').hide();
+      $('#cp').click(function(){
+        $('#colors').slideToggle(500);
+      });
+
+      $('.bg-default').click(function(){
+        $('.bg-info').toggleClass('bg-light text-dark');
+        $('.btn').toggleClass('bg-light text-dark');
+        $('.fa-check').toggleClass('text-dark');
+      });
+      $('.bg-warning').click(function(){
+        $('.bg-info').toggleClass('bg-warning');
+        $('.btn').toggleClass('bg-warning');
+      });
+      $('.bg-success').click(function(){
+        $('.bg-info').toggleClass('bg-success');  //issue
+        $('.btn').toggleClass('bg-success');
+      });
+      $('.bg-dark').click(function(){
+        $('.bg-info').toggleClass('bg-dark');
+        $('.btn').toggleClass('bg-dark');
+      });
+      $('.bg-danger').click(function(){
+        $('.bg-info').toggleClass('bg-danger');
+        $('.btn').toggleClass('bg-danger');
+      });
+
+      // night mode
+      $('#nm').click(function(){
+        // $('#nm').text('Light Mode');
+        $('body').css('backgroundColor', '#333').css('color', '#fff');
+        $('.switchColor').css('color', '#222');
+        $('.contactIcons').css('color', '#ddd');
+        // $('#nm').fadeOut(500);
+      });
+    });
+  </script>
+  <style>
+    .sidecard{
+      width: 100%;
+      height: 200px;
+      margin-bottom: 5px;
+    }
+    .menu{
+      width: 200px;
+      height: inherit;
+      border-radius: 12px 0 0 12px;
+      background-color: #ddf;
+      float: right;
+    }
+    .fa-cog{
+      font-size: 1.7rem;
+    }
+    .h6{
+      cursor: pointer;
+      margin: 10px;
+    }
+    .colorCard{
+      width: 50px;
+      height: 20px;
+      margin: 10px;
+    }
+    a.contactIcons{
+      font-size: 1.5rem;
+      text-decoration: none;
+      color: #222;
+    }
+    a.contactIcons:hover{
+      opacity: 0.7;
+    }
+    
+    /* animation */
+    @-webkit-keyframes cogSpin{
+      0%{ -webkit-transform: rotate(0deg); }
+      100%{ -webkit-transform: rotate(30deg); }
+    }
+    @keyframes cogSpin{
+      0%{ transform: rotate(0deg); }
+      100%{ transform: rotate(30deg); }
+    }
+    .animation{
+      -webkit-animation: cogSpin 0.5s 0s 1;
+      animation: cogSpin 0.5s 0s 1;
+    }
+  </style>
+</head>
+<body>
+  <div class= "container-fluid">
+    <div class= "row mb-2">
+      <div class= "card text-center" style= "width:100%;">Ad</div>
+    </div>
+    <div class= "row">
+      <div class= "col-sm-10 mb-2">
+        <div id= "pageTitle" class= "h1 text-center">Your Quick To-Do</div>
+        <div class= "float-right"> <i class= "fa fa-cog"></i> </div>
+        <div class= "menu">
+          <div id= "cp" class= "h6 switchColor">Color Picker</div>
+          <div id= "colors" class= "row p-3">
+            <a href= "#" class= "card bg-default colorCard col"></a>
+            <a href= "#" class= "card bg-warning colorCard col"></a>
+            <a href= "#" class= "card bg-success colorCard col"></a><!--issue-->
+            <a href= "#" class= "card bg-dark colorCard col"></a>
+            <a href= "#" class= "card bg-danger colorCard col"></a>
+          </div>
+          <div id= "nm" class= "h6 switchColor">Night Mode</div>
+        </div>
+        <div class= "lead text-center">Tired of loosing track of all your objectives for the day?
+          All you need is a to-do list, and this one right here is perfect. Feel free 
+          to play around.
+        </div>
+        <div id= "signIn" class= "form-group form-horizontal">
+          <input id= "nameForm" type= "text" placeholder= "your name" class= "form-control"/>
+          <button id= "nameOk" type= "submit" class= "btn btn-info form-control">OK</button>
+        </div>
+        <div id= "todo">
+          <h4 id= "personToDo"></h4>
+          <div class= "form-group form-inline">
+            <input id= "inpTask" type= "text" placeholder= "your task..." class= "form-control">
+            <button id= "add" class= "btn btn-info">Add</button>
+          </div>
+          <p><ol id= "taskList" type= "1"></ol></p>
+        </div>
+      </div>
+      <div class= "col-sm-2">
+        <div class= "card sidecard text-center">Ad</div>
+        <div class= "card sidecard text-center">Ad</div>
+        <a href= "https://github.com/danteadonis?tab=repositories" class= "fa fa-github mx-4 contactIcons"></a>
+        <a href= "https://twitter.com/intent/tweet?screen_name=danteadon1s" class="fa fa-twitter mx-4 contactIcons"></a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
